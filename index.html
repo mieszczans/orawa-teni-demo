@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Strona w przygotowaniu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#10231a;
+    --brand:#1F8A4C;
+    --live:#FF5247;
+    --amber:#FFC23C;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;margin:0;}
+  body{
+    font-family:'Inter',system-ui,-apple-system,sans-serif;
+    background:#cfeacb;color:var(--ink);overflow:hidden;
+  }
+  .stage{position:relative;width:100%;height:100vh;height:100dvh;overflow:hidden;}
+  svg.scene{position:absolute;inset:0;width:100%;height:100%;display:block;}
+
+  .veil{
+    position:absolute;left:0;right:0;top:0;height:42%;
+    background:linear-gradient(180deg,rgba(243,249,240,.94) 0%,rgba(243,249,240,.55) 55%,rgba(243,249,240,0) 100%);
+    pointer-events:none;
+  }
+
+  .overlay{
+    position:absolute;left:0;right:0;top:0;
+    display:flex;flex-direction:column;align-items:center;text-align:center;
+    gap:clamp(12px,2.1vh,22px);
+    padding:clamp(18px,3.6vh,40px) 18px 0;pointer-events:none;
+  }
+  .overlay > *{pointer-events:auto;}
+
+  .pill{
+    display:inline-flex;align-items:center;gap:8px;
+    font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.14em;
+    text-transform:uppercase;font-size:clamp(11px,1.5vw,14px);color:var(--brand);
+    background:#fff;border:1.5px solid rgba(31,138,76,.25);
+    padding:6px 14px;border-radius:999px;box-shadow:0 4px 16px rgba(20,40,25,.08);
+  }
+  .pill .dot{width:9px;height:9px;border-radius:50%;background:var(--live);
+    animation:blink 1.1s steps(1,end) infinite;}
+
+  h1{
+    font-family:'Anton',sans-serif;font-weight:400;margin:0;
+    line-height:.9;letter-spacing:.005em;color:var(--ink);
+    font-size:clamp(31px,6vw,66px);text-transform:uppercase;
+  }
+  h1 em{font-style:normal;color:var(--brand);}
+
+  .sub{
+    max-width:50ch;margin:0 auto;font-size:clamp(13.5px,1.75vw,18px);
+    line-height:1.5;color:#27392f;font-weight:450;
+  }
+  .sub s{text-decoration-thickness:2px;text-decoration-color:rgba(255,82,71,.7);opacity:.62;}
+
+  .social{
+    margin-top:clamp(2px,0.6vh,6px);
+    display:flex;align-items:center;gap:9px;flex-wrap:wrap;justify-content:center;
+  }
+  .social .lbl{
+    width:100%;margin-bottom:2px;
+    font-family:'Barlow Condensed',sans-serif;font-weight:600;letter-spacing:.1em;
+    text-transform:uppercase;font-size:12px;color:#3a4a40;
+  }
+  .social a{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:46px;height:46px;border-radius:13px;text-decoration:none;color:#13231a;
+    background:#fff;border:1.5px solid rgba(20,40,25,.1);
+    transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease, color .15s ease;
+    box-shadow:0 3px 10px rgba(20,40,25,.07);
+  }
+  .social a:hover{transform:translateY(-3px);border-color:var(--bc,var(--brand));color:var(--bc,var(--brand));
+    box-shadow:0 9px 22px color-mix(in srgb, var(--bc,var(--brand)) 34%, transparent), 0 4px 12px rgba(20,40,25,.12);}
+  .social a.ig:hover{background:linear-gradient(48deg,#F58529,#DD2A7B 52%,#8134AF,#515BD4);color:#fff;border-color:transparent;}
+  .social a.tt:hover{background:#0b0c0e;color:#fff;border-color:#25F4EE;box-shadow:0 9px 22px rgba(254,44,85,.34),0 0 0 1px #25F4EE inset;}
+  .social a.x:hover{background:#0a0a0a;color:#fff;border-color:#0a0a0a;box-shadow:0 9px 22px rgba(0,0,0,.32);}
+  .social a:focus-visible{outline:3px solid var(--brand);outline-offset:2px;}
+  .social svg{width:21px;height:21px;display:block;}
+
+  .brand{display:flex;justify-content:center;width:100%;margin-bottom:clamp(14px,2.6vh,28px);}
+  .brand .logoSvg{width:clamp(176px,24vw,244px);height:auto;color:var(--ink);display:block;
+    filter:drop-shadow(0 3px 14px rgba(16,35,26,.18));}
+
+  /* broadcast scorebug */
+  .scorebug{
+    position:absolute;left:clamp(12px,2.2vw,32px);bottom:clamp(12px,2.4vh,28px);
+    background:linear-gradient(180deg,#163142 0%,#0B1820 100%);
+    border:1px solid rgba(255,255,255,.08);border-radius:12px;
+    box-shadow:0 14px 34px rgba(8,20,12,.34);overflow:hidden;
+    font-family:'Barlow Condensed',sans-serif;color:#EAF4F2;min-width:300px;z-index:5;
+  }
+  .sb-top{display:flex;align-items:center;gap:8px;padding:7px 12px;
+    background:rgba(0,0,0,.22);border-bottom:1px solid rgba(255,255,255,.06);}
+  .sb-top .meta{font-weight:700;letter-spacing:.13em;font-size:12px;color:#82B9CB;text-transform:uppercase;}
+  .sb-top .mp{margin-left:auto;display:inline-flex;align-items:center;gap:6px;
+    font-weight:700;letter-spacing:.08em;font-size:11px;text-transform:uppercase;color:#FFD27A;}
+  .sb-top .mp .l{width:7px;height:7px;border-radius:50%;background:var(--live);
+    animation:blink 1.1s steps(1,end) infinite;}
+  .sb-row{display:grid;grid-template-columns:1fr repeat(5,23px) 34px;align-items:center;padding:7px 11px;}
+  .sb-row + .sb-row{border-top:1px solid rgba(255,255,255,.06);}
+  .sb-name{font-weight:700;letter-spacing:.04em;font-size:16px;display:flex;align-items:center;gap:7px;white-space:nowrap;}
+  .sb-name .srv{width:7px;height:7px;border-radius:50%;background:var(--amber);opacity:0;}
+  .sb-row.serving .srv{opacity:1;}
+  .sb-set{font-weight:600;font-size:16px;text-align:center;color:#7F97A0;}
+  .sb-set.w{color:#EAF4F2;}
+  .sb-set sup{font-size:9px;font-weight:600;color:#5f7a85;vertical-align:super;margin-left:.5px;}
+  .sb-tb{font-weight:700;font-size:21px;text-align:center;color:#0B1820;
+    background:var(--amber);border-radius:6px;padding:1px 0;margin-left:6px;}
+
+  @keyframes blink{50%{opacity:.18;}}
+
+  @media (max-width:600px){
+    .veil{height:54%;}
+    .brand .logoSvg{width:clamp(160px,50vw,210px);}
+    .sub{max-width:32ch;}
+    .scorebug{min-width:0;transform:scale(.82);transform-origin:left bottom;}
+    .social a{width:42px;height:42px;border-radius:12px;}
+  }
+  @media (max-width:380px){
+    .social{gap:7px;}
+    .social a{width:38px;height:38px;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .pill .dot,.sb-top .mp .l{animation:none;}
+  }
+</style>
+</head>
+<body>
+<div class="stage">
+  <svg class="scene" id="scene" viewBox="0 0 1200 760" preserveAspectRatio="xMidYMid slice" role="img"
+       aria-label="Izometryczna animacja meczu tenisowego. Tenisista i tenisistka odbijają piłkę środkiem rakiety w nieskończonej wymianie na zielonym korcie. Dookoła puste trybuny i drzewa. Wynik: sety 7:5, 5:7, 7:5, 5:7 oraz trwający tie-break 11:10.">
+    <defs>
+      <radialGradient id="field" cx="0.5" cy="0.42" r="0.75">
+        <stop offset="0" stop-color="#52A05A"/>
+        <stop offset="1" stop-color="#2F7A3E"/>
+      </radialGradient>
+      <linearGradient id="courtG" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#62B164"/>
+        <stop offset="1" stop-color="#4F9A53"/>
+      </linearGradient>
+      <radialGradient id="ballG" cx="0.35" cy="0.3" r="0.9">
+        <stop offset="0" stop-color="#EAFB7A"/>
+        <stop offset="1" stop-color="#B7D636"/>
+      </radialGradient>
+      <radialGradient id="sky" cx="0.5" cy="0" r="1">
+        <stop offset="0" stop-color="#CDEBF4"/>
+        <stop offset="1" stop-color="#CDEBF4" stop-opacity="0"/>
+      </radialGradient>
+
+      <!-- soft-3D character gradients -->
+      <radialGradient id="skinG" cx="0.38" cy="0.32" r="0.8">
+        <stop offset="0" stop-color="#FBDCBA"/>
+        <stop offset="1" stop-color="#E2A578"/>
+      </radialGradient>
+      <linearGradient id="skinLimb" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#F7CFA6"/>
+        <stop offset="1" stop-color="#E0A074"/>
+      </linearGradient>
+      <linearGradient id="kitW" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#FFFFFF"/>
+        <stop offset="1" stop-color="#DDE3DE"/>
+      </linearGradient>
+      <linearGradient id="kitWm" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#FFFFFF"/>
+        <stop offset="1" stop-color="#E6DEE2"/>
+      </linearGradient>
+      <linearGradient id="hairM" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#9A6336"/>
+        <stop offset="1" stop-color="#653E22"/>
+      </linearGradient>
+      <linearGradient id="hairW" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#8B5A33"/>
+        <stop offset="1" stop-color="#5C3820"/>
+      </linearGradient>
+      <linearGradient id="woodG" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#DCA05A"/>
+        <stop offset="0.5" stop-color="#B97636"/>
+        <stop offset="1" stop-color="#8A5226"/>
+      </linearGradient>
+      <radialGradient id="shoeW" cx="0.4" cy="0.3" r="0.9">
+        <stop offset="0" stop-color="#FFFFFF"/>
+        <stop offset="1" stop-color="#D7DCD6"/>
+      </radialGradient>
+      <filter id="soft" x="-40%" y="-40%" width="180%" height="180%">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="3"/>
+      </filter>
+    </defs>
+
+    <rect x="0" y="0" width="1200" height="760" fill="url(#field)"/>
+    <rect x="0" y="0" width="1200" height="300" fill="url(#sky)" opacity="0.5"/>
+
+    <g id="sceneBack"></g>   <!-- stands + trees behind court -->
+    <g id="court"></g>       <!-- apron, surface, lines, net -->
+    <g id="sceneFront"></g>  <!-- side trees that sit in front edges -->
+    <ellipse id="ballShadow" cx="600" cy="600" rx="14" ry="6" fill="#10401f" opacity="0.26"/>
+    <g id="playerFar"></g>
+    <g id="playerNear"></g>
+    <g id="trail"></g>
+    <g id="impact"></g>
+    <circle id="ball" cx="600" cy="500" r="10" fill="url(#ballG)" stroke="#9bbb2c" stroke-width="1"/>
+  </svg>
+
+  <div class="veil"></div>
+
+  <div class="overlay">
+    <div class="brand"><svg class="logoSvg" viewBox="0 0 70 31" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Orawa Tenis">
+<path d="M40.6001 11.7H36.1001C35.8521 11.7 35.6401 11.788 35.4641 11.964C35.2881 12.14 35.2001 12.352 35.2001 12.6V17.1H34.0001V12.6C34.0001 12.208 34.0921 11.856 34.2761 11.544C34.4681 11.224 34.7241 10.972 35.0441 10.788C35.3641 10.596 35.7161 10.5 36.1001 10.5H40.6001V11.7Z" fill="currentColor"/>
+<path d="M48.6733 17.1H42.6733C42.2893 17.1 41.9373 17.008 41.6173 16.824C41.2973 16.632 41.0413 16.38 40.8493 16.068C40.6653 15.748 40.5733 15.392 40.5733 15C40.5733 14.608 40.6653 14.256 40.8493 13.944C41.0413 13.624 41.2973 13.372 41.6173 13.188C41.9373 12.996 42.2893 12.9 42.6733 12.9H46.8733V14.1H42.6733C42.4253 14.1 42.2133 14.188 42.0373 14.364C41.8613 14.54 41.7733 14.752 41.7733 15C41.7733 15.248 41.8613 15.46 42.0373 15.636C42.2133 15.812 42.4253 15.9 42.6733 15.9H47.4733V12.6C47.4733 12.352 47.3853 12.14 47.2093 11.964C47.0333 11.788 46.8213 11.7 46.5733 11.7H41.7733V10.5H46.5733C46.9653 10.5 47.3173 10.596 47.6293 10.788C47.9493 10.972 48.2013 11.224 48.3853 11.544C48.5773 11.856 48.6733 12.208 48.6733 12.6V17.1Z" fill="currentColor"/>
+<path d="M60.1168 13.8C60.1168 14.256 60.0328 14.684 59.8648 15.084C59.6968 15.476 59.4608 15.824 59.1568 16.128C58.8608 16.432 58.5128 16.672 58.1128 16.848C57.7208 17.016 57.2968 17.1 56.8408 17.1H53.5168C53.0608 17.1 52.6328 17.016 52.2328 16.848C51.8408 16.672 51.4928 16.432 51.1888 16.128C50.8928 15.824 50.6608 15.476 50.4928 15.084C50.3248 14.684 50.2408 14.256 50.2408 13.8V10.5H51.4408V13.8C51.4408 14.184 51.5328 14.536 51.7168 14.856C51.9088 15.168 52.1608 15.42 52.4728 15.612C52.7848 15.796 53.1328 15.892 53.5168 15.9H54.5848V10.5H55.7728V15.9H56.8408C57.2248 15.892 57.5728 15.796 57.8848 15.612C58.2048 15.42 58.4568 15.168 58.6408 14.856C58.8248 14.536 58.9168 14.184 58.9168 13.8V10.5H60.1168V13.8Z" fill="currentColor"/>
+<path d="M69.2514 17.1H63.2514C62.8674 17.1 62.5154 17.008 62.1954 16.824C61.8754 16.632 61.6194 16.38 61.4274 16.068C61.2434 15.748 61.1514 15.392 61.1514 15C61.1514 14.608 61.2434 14.256 61.4274 13.944C61.6194 13.624 61.8754 13.372 62.1954 13.188C62.5154 12.996 62.8674 12.9 63.2514 12.9H67.4514V14.1H63.2514C63.0034 14.1 62.7914 14.188 62.6154 14.364C62.4394 14.54 62.3514 14.752 62.3514 15C62.3514 15.248 62.4394 15.46 62.6154 15.636C62.7914 15.812 63.0034 15.9 63.2514 15.9H68.0514V12.6C68.0514 12.352 67.9634 12.14 67.7874 11.964C67.6114 11.788 67.3994 11.7 67.1514 11.7H62.3514V10.5H67.1514C67.5434 10.5 67.8954 10.596 68.2074 10.788C68.5274 10.972 68.7794 11.224 68.9634 11.544C69.1554 11.856 69.2514 12.208 69.2514 12.6V17.1Z" fill="currentColor"/>
+<path d="M37.4893 26C37.4893 26.384 37.3933 26.736 37.2013 27.056C37.0173 27.376 36.7653 27.632 36.4453 27.824C36.1333 28.008 35.7813 28.1 35.3893 28.1H30.7933C30.9613 28.452 31.2093 28.74 31.5373 28.964C31.8733 29.188 32.2493 29.3 32.6653 29.3H36.5893V30.5H32.6653C32.2093 30.5 31.7813 30.416 31.3813 30.248C30.9893 30.072 30.6413 29.832 30.3373 29.528C30.0413 29.224 29.8093 28.876 29.6413 28.484C29.4733 28.084 29.3893 27.656 29.3893 27.2C29.3893 26.744 29.4733 26.32 29.6413 25.928C29.8093 25.528 30.0413 25.176 30.3373 24.872C30.6413 24.568 30.9893 24.332 31.3813 24.164C31.7813 23.988 32.2093 23.9 32.6653 23.9H35.3893C35.7813 23.9 36.1333 23.996 36.4453 24.188C36.7653 24.372 37.0173 24.624 37.2013 24.944C37.3933 25.256 37.4893 25.608 37.4893 26ZM35.3893 26.9C35.6373 26.9 35.8493 26.812 36.0253 26.636C36.2013 26.46 36.2893 26.248 36.2893 26C36.2893 25.752 36.2013 25.54 36.0253 25.364C35.8493 25.188 35.6373 25.1 35.3893 25.1H32.6653C32.3133 25.1 31.9893 25.18 31.6933 25.34C31.4053 25.5 31.1653 25.716 30.9733 25.988C30.7813 26.26 30.6613 26.564 30.6133 26.9H35.3893Z" fill="currentColor"/>
+<path d="M39.8687 30.5H38.6687V23.9H43.1687C43.6247 23.9 44.0487 23.988 44.4407 24.164C44.8407 24.332 45.1887 24.568 45.4847 24.872C45.7887 25.176 46.0247 25.528 46.1927 25.928C46.3607 26.32 46.4447 26.744 46.4447 27.2V30.5H45.2447V27.2C45.2447 26.816 45.1527 26.468 44.9687 26.156C44.7847 25.836 44.5327 25.58 44.2127 25.388C43.9007 25.196 43.5527 25.1 43.1687 25.1H39.8687V30.5Z" fill="currentColor"/>
+<path d="M49.5671 22.4C49.5671 22.648 49.4791 22.86 49.3031 23.036C49.1271 23.212 48.9151 23.3 48.6671 23.3C48.4191 23.3 48.2071 23.212 48.0311 23.036C47.8551 22.86 47.7671 22.648 47.7671 22.4C47.7671 22.152 47.8551 21.94 48.0311 21.764C48.2071 21.588 48.4191 21.5 48.6671 21.5C48.9151 21.5 49.1271 21.588 49.3031 21.764C49.4791 21.94 49.5671 22.152 49.5671 22.4ZM49.2671 30.5H48.0671V23.9H49.2671V30.5Z" fill="currentColor"/>
+<path d="M57.8848 28.4C57.8848 28.792 57.7888 29.148 57.5968 29.468C57.4128 29.78 57.1608 30.032 56.8408 30.224C56.5288 30.408 56.1768 30.5 55.7848 30.5H50.6848V29.3H55.7848C56.0328 29.3 56.2448 29.212 56.4208 29.036C56.5968 28.86 56.6848 28.648 56.6848 28.4C56.6848 28.152 56.5968 27.94 56.4208 27.764C56.2448 27.588 56.0328 27.5 55.7848 27.5H52.4848C52.1568 27.5 51.8528 27.42 51.5728 27.26C51.3008 27.1 51.0848 26.884 50.9248 26.612C50.7648 26.332 50.6848 26.028 50.6848 25.7C50.6848 25.364 50.7648 25.06 50.9248 24.788C51.0848 24.516 51.3008 24.3 51.5728 24.14C51.8528 23.98 52.1568 23.9 52.4848 23.9H57.2848V25.1H52.4848C52.3168 25.1 52.1728 25.16 52.0528 25.28C51.9408 25.392 51.8848 25.532 51.8848 25.7C51.8848 25.868 51.9408 26.012 52.0528 26.132C52.1728 26.244 52.3168 26.3 52.4848 26.3H55.7848C56.1768 26.3 56.5288 26.396 56.8408 26.588C57.1608 26.772 57.4128 27.024 57.5968 27.344C57.7888 27.656 57.8848 28.008 57.8848 28.4Z" fill="currentColor"/>
+<path d="M13.7701 18.1239L14.4115 17.013L22.5403 21.7061L21.8989 22.817L13.7701 18.1239Z" fill="currentColor"/>
+<path d="M14.3838 27.4063L13.7428 26.296L21.8716 21.6029L22.5126 22.7132L14.3838 27.4063Z" fill="currentColor"/>
+<path d="M20.9488 22.8558V21.5465H30.4588V22.8558H20.9488Z" fill="currentColor"/>
+<path d="M8.51047 15C13.2107 15 17.0209 18.2241 17.0209 22.2012C17.0209 26.1783 13.2107 29.4024 8.51047 29.4024C3.81027 29.4024 1.73844e-07 26.1783 0 22.2012C-1.73844e-07 18.2241 3.81027 15 8.51047 15ZM8.51047 28.2252C12.4423 28.2252 15.6297 25.5281 15.6297 22.2012C15.6297 18.8742 12.4423 16.1772 8.51047 16.1772C4.57861 16.1772 1.39121 18.8742 1.39121 22.2012C1.39121 25.5281 4.57861 28.2252 8.51047 28.2252Z" fill="currentColor"/>
+<path d="M30.2785 13.7701L31.3894 14.4115L26.6963 22.5403L25.5854 21.8989L30.2785 13.7701Z" fill="currentColor"/>
+<path d="M20.9961 14.3838L22.1063 13.7428L26.7994 21.8716L25.6892 22.5126L20.9961 14.3838Z" fill="currentColor"/>
+<path d="M25.5465 20.9488H26.8558V30.4588H25.5465V20.9488Z" fill="currentColor"/>
+<path d="M33.4023 8.51047C33.4023 13.2107 30.1783 17.0209 26.2012 17.0209C22.2241 17.0209 19 13.2107 19 8.51047C19 3.81027 22.2241 0 26.2012 0C30.1783 0 33.4023 3.81027 33.4023 8.51047ZM20.1772 8.51047C20.1772 12.4423 22.8742 15.6297 26.2012 15.6297C29.5281 15.6297 32.2252 12.4423 32.2252 8.51047C32.2252 4.57861 29.5281 1.39121 26.2012 1.39121C22.8742 1.39121 20.1772 4.57861 20.1772 8.51047Z" fill="currentColor"/>
+</svg></div>
+    <span class="pill"><span class="dot"></span>Punkt wciąż w grze</span>
+    <h1>Strona w&nbsp;<em>przygotowaniu</em></h1>
+    <p class="sub">Trwa zacięta wymiana, a&nbsp;my dogrywamy ostatnie <s>piłki</s>…zmiany. Obserwuj nasze social media, aby dowiedzieć się o&nbsp;oficjalnym starcie strony.</p>
+    <div class="social">
+      <span class="lbl">Bądź na bieżąco:</span>
+      <a href="#" class="yt" style="--bc:#FF0000" aria-label="YouTube" title="YouTube">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 12s0-3.2-.4-4.7a2.5 2.5 0 0 0-1.8-1.8C19.3 5 12 5 12 5s-7.3 0-8.8.5A2.5 2.5 0 0 0 1.4 7.3C1 8.8 1 12 1 12s0 3.2.4 4.7a2.5 2.5 0 0 0 1.8 1.8C4.7 19 12 19 12 19s7.3 0 8.8-.5a2.5 2.5 0 0 0 1.8-1.8C23 15.2 23 12 23 12zM9.8 15.3V8.7l5.7 3.3-5.7 3.3z"/></svg>
+      </a>
+      <a href="#" class="fb" style="--bc:#1877F2" aria-label="Facebook" title="Facebook">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 9V7c0-1 .3-1.5 1.6-1.5H17V2.2C16.5 2.1 15.3 2 14.2 2 11.6 2 10 3.5 10 6.3V9H7.5v3.4H10V22h4v-9.6h2.7l.4-3.4H14z"/></svg>
+      </a>
+      <a href="#" class="ig" style="--bc:#DD2A7B" aria-label="Instagram" title="Instagram">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="2.5" width="19" height="19" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.6" cy="6.4" r="1.1" fill="currentColor" stroke="none"/></svg>
+      </a>
+      <a href="#" class="tt" style="--bc:#25F4EE" aria-label="TikTok" title="TikTok">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 2c.3 2.3 1.6 3.7 3.8 3.9v2.6c-1.3.1-2.5-.3-3.8-1v6.6c0 4.1-3.2 6.9-7 6.1-2.8-.6-4.3-3.2-3.9-6 .4-2.6 2.8-4.4 5.6-4.1v2.8c-.5-.1-1-.2-1.5-.1-1.2.2-2 1.1-1.9 2.3.1 1.1 1.1 2 2.3 1.9 1.3-.1 2.1-1 2.1-2.4V2h2.3z"/></svg>
+      </a>
+      <a href="#" class="x" style="--bc:#0a0a0a" aria-label="X" title="X">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 3h2.9l-6.3 7.2L21.6 21h-5.8l-4.5-5.9L6 21H3.1l6.8-7.8L2.7 3h5.9l4.1 5.4L17.5 3zm-1 16.2h1.6L7.6 4.7H5.9l10.6 14.5z"/></svg>
+      </a>
+    </div>
+  </div>
+
+  <div class="scorebug" aria-label="Tablica wyników. Sety: 7:6, 6:7, 7:6, 6:7. Trwa tie-break przy 6:6, Nowak prowadzi z Mieszczańczyk 11:10. Piłka meczowa.">
+    <div class="sb-top">
+      <span class="meta">Tie-break · Set 5</span>
+      <span class="mp"><span class="l"></span>Piłka meczowa</span>
+    </div>
+    <div class="sb-row serving">
+      <span class="sb-name"><span class="srv"></span>Nowak</span>
+      <span class="sb-set w">7</span><span class="sb-set">6<sup>8</sup></span><span class="sb-set w">7</span><span class="sb-set">6<sup>12</sup></span><span class="sb-set">6</span>
+      <span class="sb-tb">11</span>
+    </div>
+    <div class="sb-row">
+      <span class="sb-name"><span class="srv"></span>Mieszczańczyk</span>
+      <span class="sb-set">6<sup>5</sup></span><span class="sb-set w">7</span><span class="sb-set">6<sup>6</sup></span><span class="sb-set w">7</span><span class="sb-set">6</span>
+      <span class="sb-tb">10</span>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  const NS="http://www.w3.org/2000/svg";
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const el=(t,a)=>{const e=document.createElementNS(NS,t);if(a)for(const k in a)e.setAttribute(k,a[k]);return e;};
+  const lerp=(a,b,t)=>a+(b-a)*t;
+  const smooth=(e0,e1,x)=>{const t=Math.max(0,Math.min(1,(x-e0)/(e1-e0)));return t*t*(3-2*t);};
+
+  /* ---------- isometric projection ----------
+     u: across court width (-1 left .. +1 right)
+     v: along court length  (-1 near .. +1 far)  */
+  const C={x:600,y:560};
+  const HW={x:206,y:58};     // half-width screen vector (side-to-side baseline)
+  const HL={x:122,y:-140};   // half-length screen vector (near<->far, more vertical/top-down)
+  const proj=(u,v)=>({x:C.x+u*HW.x+v*HL.x, y:C.y+u*HW.y+v*HL.y});
+  const ptStr=p=>p.x.toFixed(1)+","+p.y.toFixed(1);
+
+  /* ---------- scenery: stands + trees ---------- */
+  const back=document.getElementById('sceneBack');
+  const front=document.getElementById('sceneFront');
+
+  function standBand(host, pts, seatRows){
+    const poly=el('polygon',{points:pts.map(ptStr).join(' '),fill:'#46596A'});
+    host.appendChild(poly);
+    // subtle top highlight
+    seatRows.forEach(row=>{
+      // row: {a:{u,v}, b:{u,v}, n}
+      for(let i=0;i<row.n;i++){
+        const t=(i+0.5)/row.n;
+        const u=lerp(row.a.u,row.b.u,t), v=lerp(row.a.v,row.b.v,t);
+        const s=proj(u,v);
+        const r=el('rect',{x:(s.x-6).toFixed(1),y:(s.y-4).toFixed(1),width:12,height:7,rx:2.4,
+          fill:(i%2? '#3F8A92':'#2C6B73')});
+        host.appendChild(r);
+      }
+    });
+  }
+  // far stand (behind far baseline, top)
+  standBand(back,
+    [proj(-1.35,1.12),proj(1.35,1.12),proj(1.5,1.78),proj(-1.5,1.78)],
+    [ {a:{u:-1.3,v:1.22},b:{u:1.3,v:1.22},n:18},
+      {a:{u:-1.35,v:1.40},b:{u:1.35,v:1.40},n:19},
+      {a:{u:-1.4,v:1.58},b:{u:1.4,v:1.58},n:20} ]);
+  // left stand
+  standBand(back,
+    [proj(-1.12,-1.25),proj(-1.12,1.25),proj(-1.75,1.25),proj(-1.75,-1.25)],
+    [ {a:{u:-1.26,v:-1.15},b:{u:-1.26,v:1.15},n:14},
+      {a:{u:-1.45,v:-1.18},b:{u:-1.45,v:1.18},n:14},
+      {a:{u:-1.64,v:-1.2},b:{u:-1.64,v:1.2},n:15} ]);
+  // right stand
+  standBand(back,
+    [proj(1.12,-1.25),proj(1.12,1.25),proj(1.75,1.25),proj(1.75,-1.25)],
+    [ {a:{u:1.26,v:-1.15},b:{u:1.26,v:1.15},n:14},
+      {a:{u:1.45,v:-1.18},b:{u:1.45,v:1.18},n:14},
+      {a:{u:1.64,v:-1.2},b:{u:1.64,v:1.2},n:15} ]);
+
+  function tree(host,u,v,scale){
+    const b=proj(u,v);
+    const g=el('g',{transform:`translate(${b.x.toFixed(1)},${b.y.toFixed(1)}) scale(${scale})`});
+    g.appendChild(el('ellipse',{cx:0,cy:2,rx:22,ry:8,fill:'#1f5a2c','fill-opacity':0.35}));
+    g.appendChild(el('rect',{x:-5,y:-26,width:10,height:30,rx:3,fill:'#6B4A2E'}));
+    const cs=[[-13,-40,17],[13,-38,16],[0,-54,21],[-4,-30,15],[7,-30,14]];
+    cs.forEach((c,i)=>g.appendChild(el('circle',{cx:c[0],cy:c[1],r:c[2],fill:i%2?'#3C9A4C':'#2E7B3D'})));
+    host.appendChild(g);
+  }
+  // trees behind (corners / gaps)
+  [[-1.9,1.5,1.5],[1.95,1.55,1.55],[-1.95,-0.1,1.4],[1.98,0.1,1.45],[0,2.0,1.3],[-1.0,1.95,1.2],[1.1,1.98,1.25]]
+    .forEach(t=>tree(back,t[0],t[1],t[2]));
+  // trees in front (near corners, drawn over court edges for depth)
+  [[-1.85,-1.5,1.7],[1.9,-1.55,1.75]].forEach(t=>tree(front,t[0],t[1],t[2]));
+
+  /* ---------- court ---------- */
+  const courtG=document.getElementById('court');
+  // apron
+  courtG.appendChild(el('polygon',{
+    points:[proj(-1.28,-1.18),proj(1.28,-1.18),proj(1.28,1.18),proj(-1.28,1.18)].map(ptStr).join(' '),
+    fill:'#2C6E58','fill-opacity':0.55}));
+  // surface
+  courtG.appendChild(el('polygon',{
+    points:[proj(-1,-1),proj(1,-1),proj(1,1),proj(-1,1)].map(ptStr).join(' '),
+    fill:'url(#courtG)'}));
+  // lines
+  const line=(a,b,w)=>courtG.appendChild(el('line',{x1:a.x,y1:a.y,x2:b.x,y2:b.y,
+    stroke:'#F4F8F2','stroke-width':w,'stroke-linecap':'round'}));
+  // outline
+  [[-1,-1,1,-1],[1,-1,1,1],[1,1,-1,1],[-1,1,-1,-1]].forEach(s=>line(proj(s[0],s[1]),proj(s[2],s[3]),3.4));
+  // service lines (v = +-0.54) and singles within; center service line
+  const SV=0.54;
+  line(proj(-1,-SV),proj(1,-SV),2.6);
+  line(proj(-1,SV),proj(1,SV),2.6);
+  line(proj(0,-SV),proj(0,SV),2.6);
+  // center marks
+  line(proj(0,-1),proj(0,-0.93),3);
+  line(proj(0,1),proj(0,0.93),3);
+  // net (v=0), posts slightly beyond sidelines, with a little height
+  const nL=proj(-1.12,0), nR=proj(1.12,0), netH=26;
+  courtG.appendChild(el('polygon',{points:[
+    ptStr(nL),ptStr(nR),ptStr({x:nR.x,y:nR.y-netH}),ptStr({x:nL.x,y:nL.y-netH})].join(' '),
+    fill:'#eef6f1','fill-opacity':0.16}));
+  // net mesh
+  for(let i=0;i<=22;i++){
+    const t=i/22, x=lerp(nL.x,nR.x,t), y=lerp(nL.y,nR.y,t);
+    courtG.appendChild(el('line',{x1:x,y1:y,x2:x,y2:y-netH,stroke:'#f4faf6','stroke-width':0.8,'stroke-opacity':0.45}));
+  }
+  courtG.appendChild(el('line',{x1:nL.x,y1:nL.y-netH,x2:nR.x,y2:nR.y-netH,stroke:'#ffffff','stroke-width':3.2}));
+  courtG.appendChild(el('line',{x1:nL.x,y1:nL.y,x2:nR.x,y2:nR.y,stroke:'#dfeee4','stroke-width':2}));
+  courtG.appendChild(el('rect',{x:nL.x-3,y:nL.y-netH-2,width:6,height:netH+4,rx:2,fill:'#33433b'}));
+  courtG.appendChild(el('rect',{x:nR.x-3,y:nR.y-netH-2,width:6,height:netH+4,rx:2,fill:'#33433b'}));
+
+  /* ---------- players ---------- */
+  // Each player: feet point, body parts static; racket arm drawn dynamically.
+  function buildPlayer(host, cfg){
+    const x=0, y=0;
+    const teal=cfg.accent, trim=cfg.accent2, off=-cfg.racketSide;
+    const g=el('g',{});
+    host.appendChild(g);
+    // soft grounded shadow
+    g.appendChild(el('ellipse',{cx:x,cy:y+3,rx:27,ry:9,fill:'#0e3a1c','fill-opacity':0.3,filter:'url(#soft)'}));
+    const bob=el('g',{}); g.appendChild(bob);
+
+    const leg=(lx)=>{
+      bob.appendChild(el('rect',{x:lx-5,y:y-44,width:10,height:42,rx:5,fill:'url(#skinLimb)'}));
+      bob.appendChild(el('rect',{x:lx-4.5,y:y-30,width:9,height:14,rx:4,fill:'#FFFFFF'})); // sock
+      bob.appendChild(el('rect',{x:lx-4.5,y:y-27,width:9,height:2.2,rx:1,fill:teal}));
+    };
+    const shoe=(sx)=>{
+      const dir=cfg.racketSide; // toe points toward net side
+      bob.appendChild(el('path',{d:`M${sx-6},${y-6} Q${sx-7},${y+3} ${sx+1},${y+3} L${sx+6*dir+5*dir},${y+3} Q${sx+9*dir},${y+2} ${sx+8*dir},${y-3} Z`,fill:'url(#shoeW)'}));
+      bob.appendChild(el('ellipse',{cx:sx+6*dir,cy:y+1.5,rx:5,ry:3.2,fill:'#2E3A4A'})); // toe cap
+      bob.appendChild(el('path',{d:`M${sx-5},${y-1.5} L${sx+6*dir},${y-1.5}`,stroke:trim,'stroke-width':2,'stroke-linecap':'round'}));
+      bob.appendChild(el('ellipse',{cx:sx,cy:y+3.4,rx:8,ry:2,fill:'#cfd4ce'}));
+    };
+    leg(x-7); leg(x+7); shoe(x-7); shoe(x+7);
+
+    // bottom
+    if(cfg.female){
+      bob.appendChild(el('path',{d:`M${x-13},${y-60} L${x+13},${y-60} L${x+22},${y-38} L${x-22},${y-38} Z`,fill:'url(#kitWm)'}));
+      bob.appendChild(el('path',{d:`M${x-22},${y-38} L${x+22},${y-38} L${x+21},${y-34} L${x-21},${y-34} Z`,fill:trim}));
+      [-12,-4,4,12].forEach(px=>bob.appendChild(el('line',{x1:x+px*1.2,y1:y-58,x2:x+px*1.7,y2:y-39,stroke:'#cdd3cd','stroke-width':0.8})));
+    }else{
+      bob.appendChild(el('path',{d:`M${x-16},${y-62} L${x+16},${y-62} L${x+17},${y-42} L${x+2},${y-42} L${x},${y-50} L${x-2},${y-42} L${x-17},${y-42} Z`,fill:'url(#kitW)'}));
+      bob.appendChild(el('rect',{x:x-16,y:y-62,width:4,height:18,rx:2,fill:teal}));
+      bob.appendChild(el('rect',{x:x+12,y:y-62,width:4,height:18,rx:2,fill:teal}));
+    }
+
+    // torso (tank top)
+    bob.appendChild(el('path',{d:`M${x-18},${y-90} Q${x-19},${y-93} ${x-15},${y-94} L${x+15},${y-94} Q${x+19},${y-93} ${x+18},${y-90} L${x+15},${y-58} Q${x},${y-54} ${x-15},${y-58} Z`,fill:cfg.female?'url(#kitWm)':'url(#kitW)'}));
+    // team stripe + trim
+    bob.appendChild(el('rect',{x:x-4,y:y-92,width:8,height:36,rx:2,fill:teal,opacity:0.92}));
+    bob.appendChild(el('path',{d: cfg.facing==='back'
+      ? `M${x-10},${y-92} Q${x},${y-94} ${x+10},${y-92}`   // back collar (shallow, high)
+      : `M${x-11},${y-93} Q${x},${y-87} ${x+11},${y-93}`,  // front neckline (scoop)
+      fill:'none',stroke:trim,'stroke-width':2.4,'stroke-linecap':'round'}));
+    bob.appendChild(el('path',{d:`M${x-18},${y-90} Q${x-14},${y-86} ${x-15},${y-78}`,fill:'none',stroke:trim,'stroke-width':2}));
+    bob.appendChild(el('path',{d:`M${x+18},${y-90} Q${x+14},${y-86} ${x+15},${y-78}`,fill:'none',stroke:trim,'stroke-width':2}));
+    bob.appendChild(el('path',{d:`M${x+15},${y-58} Q${x+16},${y-74} ${x+16},${y-86}`,fill:'none',stroke:'#000','stroke-opacity':0.05,'stroke-width':6})); // soft side shade
+
+    // off arm (raised for balance)
+    const ox=x+18*off, oy=y-90;
+    const hx=ox+18*off, hyy=oy-12;
+    bob.appendChild(el('path',{d:`M${ox},${oy} Q${ox+12*off},${oy-4} ${hx},${hyy}`,fill:'none',stroke:'url(#skinLimb)','stroke-width':7,'stroke-linecap':'round'}));
+    bob.appendChild(el('circle',{cx:ox+11*off,cy:oy-6,r:2.6,fill:teal})); // wristband
+    bob.appendChild(el('circle',{cx:hx,cy:hyy,r:4.2,fill:'url(#skinG)'})); // open hand
+
+    // head — perspective-correct: back-facing player shows no face
+    const hy=y-110, hr=17;
+    if(cfg.facing==='back'){
+      // back of the head = hair; small nape of neck in skin
+      bob.appendChild(el('path',{d:`M${x-7},${hy+10} Q${x},${hy+16} ${x+7},${hy+10} L${x+6},${hy+15} Q${x},${hy+19} ${x-6},${hy+15} Z`,fill:'url(#skinG)'}));
+      bob.appendChild(el('circle',{cx:x,cy:hy,r:hr,fill:'url(#hairW)'}));
+      // hair tie + ponytail down the centre of the back (sways via _pony)
+      bob.appendChild(el('path',{d:`M${x-4.5},${hy+3} C${x-10},${hy+15} ${x-7},${hy+31} ${x},${hy+37} C${x+7},${hy+31} ${x+10},${hy+15} ${x+4.5},${hy+3} Z`,fill:'url(#hairW)',id:cfg.id+'_pony'}));
+      bob.appendChild(el('circle',{cx:x,cy:hy+3,r:3.4,fill:teal}));
+      // headband seen from behind
+      bob.appendChild(el('path',{d:`M${x-hr-1},${hy-2} Q${x},${hy-9} ${x+hr+1},${hy-2} L${x+hr+1},${hy+2.5} Q${x},${hy-4.5} ${x-hr-1},${hy+2.5} Z`,fill:teal}));
+      bob.appendChild(el('path',{d:`M${x-hr},${hy-0.5} Q${x},${hy-6} ${x+hr},${hy-0.5}`,fill:'none',stroke:'#fff','stroke-width':1.4,'stroke-opacity':0.7}));
+      bob.appendChild(el('circle',{cx:x-hr+3,cy:hy+0.5,r:1.8,fill:'#2f8e7c'})); // band knot
+    } else {
+      bob.appendChild(el('circle',{cx:x-hr+2,cy:hy+2,r:4,fill:'url(#skinG)'})); // ears
+      bob.appendChild(el('circle',{cx:x+hr-2,cy:hy+2,r:4,fill:'url(#skinG)'}));
+      bob.appendChild(el('circle',{cx:x,cy:hy,r:hr,fill:'url(#skinG)'}));
+      if(cfg.female){
+        bob.appendChild(el('path',{d:`M${x+6},${hy-10} Q${x+22},${hy-4} ${x+22},${hy+12} Q${x+22},${hy+28} ${x+11},${hy+33} Q${x+19},${hy+14} ${x+12},${hy-2} Z`,fill:'url(#hairW)',id:cfg.id+'_pony'}));
+        bob.appendChild(el('path',{d:`M${x-hr-1},${hy-2} Q${x-hr},${hy-hr-3} ${x},${hy-hr-2} Q${x+hr},${hy-hr-3} ${x+hr+1},${hy-2} Q${x+10},${hy-12} ${x},${hy-12} Q${x-10},${hy-12} ${x-hr-1},${hy-2} Z`,fill:'url(#hairW)'}));
+      }else{
+        bob.appendChild(el('path',{d:`M${x-hr-1},${hy-1} Q${x-hr},${hy-hr-4} ${x},${hy-hr-3} Q${x+hr},${hy-hr-4} ${x+hr+1},${hy-1} Q${x+hr-2},${hy-9} ${x+7},${hy-11} Q${x},${hy-14} ${x-7},${hy-11} Q${x-hr+2},${hy-9} ${x-hr-1},${hy-1} Z`,fill:'url(#hairM)'}));
+      }
+      // headband
+      bob.appendChild(el('path',{d:`M${x-hr-1},${hy-2} Q${x},${hy-9} ${x+hr+1},${hy-2} L${x+hr+1},${hy+2} Q${x},${hy-5} ${x-hr-1},${hy+2} Z`,fill:teal}));
+      bob.appendChild(el('path',{d:`M${x-hr},${hy-0.5} Q${x},${hy-6} ${x+hr},${hy-0.5}`,fill:'none',stroke:'#ffffff','stroke-width':1.4,'stroke-opacity':0.8}));
+      // face (only when facing the camera)
+      const ed=-cfg.racketSide*1.2; // glance toward the net
+      bob.appendChild(el('ellipse',{cx:x-5+ed,cy:hy+5,rx:1.9,ry:2.6,fill:'#2a221d'}));
+      bob.appendChild(el('ellipse',{cx:x+5+ed,cy:hy+5,rx:1.9,ry:2.6,fill:'#2a221d'}));
+      bob.appendChild(el('circle',{cx:x-5.5+ed,cy:hy+4,r:0.7,fill:'#fff'}));
+      bob.appendChild(el('circle',{cx:x+4.5+ed,cy:hy+4,r:0.7,fill:'#fff'}));
+      bob.appendChild(el('path',{d:`M${x-7.5+ed},${hy+1.5} Q${x-5+ed},${hy+0.3} ${x-2.5+ed},${hy+1.5}`,fill:'none',stroke:cfg.female?'#6b4326':'#5e3a22','stroke-width':1.1,'stroke-linecap':'round'}));
+      bob.appendChild(el('path',{d:`M${x+2.5+ed},${hy+1.5} Q${x+5+ed},${hy+0.3} ${x+7.5+ed},${hy+1.5}`,fill:'none',stroke:cfg.female?'#6b4326':'#5e3a22','stroke-width':1.1,'stroke-linecap':'round'}));
+      bob.appendChild(el('ellipse',{cx:x-7.5+ed,cy:hy+8.5,rx:2.6,ry:1.8,fill:'#F2A39A','fill-opacity':0.7}));
+      bob.appendChild(el('ellipse',{cx:x+7.5+ed,cy:hy+8.5,rx:2.6,ry:1.8,fill:'#F2A39A','fill-opacity':0.7}));
+      bob.appendChild(el('path',{d:`M${x-3+ed},${hy+9.5} Q${x+ed},${hy+12.5} ${x+3+ed},${hy+9.5}`,fill:'none',stroke:'#7a4a35','stroke-width':1.3,'stroke-linecap':'round'}));
+    }
+
+    // ---- racket arm (dynamic) ----
+    const arm=el('path',{d:'',fill:'none',stroke:'url(#skinLimb)','stroke-width':7,'stroke-linecap':'round',id:cfg.id+'_arm'});
+    g.appendChild(arm);
+    const wrist=el('circle',{cx:0,cy:0,r:3,fill:teal});
+    const hand=el('circle',{cx:0,cy:0,r:4.4,fill:'url(#skinG)'});
+    g.appendChild(wrist); g.appendChild(hand);
+    // racket graphic centered at sweet spot (local origin), +y points to hand
+    const rg=el('g',{id:cfg.id+'_racket'});
+    rg.appendChild(el('rect',{x:-2.6,y:11,width:5.2,height:17,rx:2.4,fill:'#3a322b'})); // grip
+    rg.appendChild(el('rect',{x:-2.6,y:15,width:5.2,height:4,fill:teal})); // grip band
+    rg.appendChild(el('path',{d:'M-3,12 L-7,1 M3,12 L7,1',stroke:'url(#woodG)','stroke-width':2.6,'stroke-linecap':'round'})); // throat
+    rg.appendChild(el('ellipse',{cx:0,cy:-3,rx:9.5,ry:12,fill:'#EFE7D0','fill-opacity':0.55})); // strings bed
+    const sgrp=el('g',{stroke:'#b9b393','stroke-width':0.6});
+    [-5,-2.5,0,2.5,5].forEach(sx=>sgrp.appendChild(el('line',{x1:sx,y1:-13.5,x2:sx,y2:7.5})));
+    [-11,-7,-3,1,5].forEach(sy=>sgrp.appendChild(el('line',{x1:-8,y1:sy,x2:8,y2:sy})));
+    rg.appendChild(sgrp);
+    rg.appendChild(el('ellipse',{cx:0,cy:-3,rx:9.5,ry:12,fill:'none',stroke:'url(#woodG)','stroke-width':3.4})); // wooden frame
+    g.appendChild(rg);
+
+    return {g, bob, arm, wrist, hand, rg, cfg};
+  }
+
+  const NEAR={ id:'pn', female:true,  facing:'back',  accent:'#46B59E', accent2:'#F47C6E', racketSide:1,
+    baseV:-1.06, contactVsign:-0.90, H:56, u:0, v:-1.06, uStart:0, uTarget:0, lastT:0 };
+  const FAR ={ id:'pf', female:false, facing:'front', accent:'#46B59E', accent2:'#F0883C', racketSide:-1,
+    baseV: 1.06, contactVsign: 0.90, H:50, u:0, v: 1.06, uStart:0, uTarget:0, lastT:0 };
+  [NEAR,FAR].forEach(P=>{
+    P.shoulderOffset={x:9*P.racketSide, y:-86};   // local, relative to feet
+    P.readyOffset   ={x:22*P.racketSide, y:-96};  // relaxed racket pose (local)
+  });
+
+  const pFar=buildPlayer(document.getElementById('playerFar'), FAR);
+  const pNear=buildPlayer(document.getElementById('playerNear'), NEAR);
+  FAR.node=pFar; NEAR.node=pNear;
+
+  function setRacket(P, rhAbs, feet, s){
+    const sh=P.shoulderOffset;                            // local
+    const rh={x:(rhAbs.x-feet.x)/s, y:(rhAbs.y-feet.y)/s}; // local target so it lands on rhAbs
+    const dx=rh.x-sh.x, dy=rh.y-sh.y, len=Math.hypot(dx,dy)||1;
+    const ux=dx/len, uy=dy/len, headOff=16;
+    const hand={x:rh.x-ux*headOff, y:rh.y-uy*headOff};
+    const mx=(sh.x+hand.x)/2 - uy*5, my=(sh.y+hand.y)/2 + ux*5;
+    const n=P.node;
+    n.arm.setAttribute('d',`M${sh.x.toFixed(1)},${sh.y.toFixed(1)} Q${mx.toFixed(1)},${my.toFixed(1)} ${hand.x.toFixed(1)},${hand.y.toFixed(1)}`);
+    n.wrist.setAttribute('cx',(hand.x-ux*4).toFixed(1)); n.wrist.setAttribute('cy',(hand.y-uy*4).toFixed(1));
+    n.hand.setAttribute('cx',hand.x.toFixed(1)); n.hand.setAttribute('cy',hand.y.toFixed(1));
+    const ang=Math.atan2(uy,ux)*180/Math.PI;
+    n.rg.setAttribute('transform',`translate(${rh.x.toFixed(1)},${rh.y.toFixed(1)}) rotate(${(ang+90).toFixed(1)})`);
+  }
+
+  /* ---------- ball trajectory ---------- */
+  const ball=document.getElementById('ball');
+  const shadow=document.getElementById('ballShadow');
+  const trailG=document.getElementById('trail');
+  const impactG=document.getElementById('impact');
+
+  function fitParabola(p1,p2,p3){
+    const [x1,y1]=p1,[x2,y2]=p2,[x3,y3]=p3;
+    const d=(x1-x2)*(x1-x3)*(x2-x3);
+    const a=(x3*(y2-y1)+x2*(y1-y3)+x1*(y3-y2))/d;
+    const b=(x3*x3*(y1-y2)+x2*x2*(y3-y1)+x1*x1*(y2-y3))/d;
+    const c=(x2*x3*(x2-x3)*y1+x3*x1*(x3-x1)*y2+x1*x2*(x1-x2)*y3)/d;
+    return p=>a*p*p+b*p+c;
+  }
+
+  let dir=1;            // 1: near->far, -1: far->near
+  let legStart=0, legDur=reduce?1600:980;
+  let gHit, gRecv, hitterH, receiverH, hRise, hHop, hitter, receiver;
+  const BOUNCE=0.64, APEX=150, APEX_P=0.30;
+  const sFromV=v=>{const t=Math.max(0,Math.min(1,(v+1.06)/2.12)); return (1.0-0.16*t)*0.86;}; // perspective + base size
+  const heightAt=p=> p<BOUNCE ? Math.max(0,hRise(p)) : Math.max(0,hHop(p));
+
+  function pickTarget(prev){ let u; do{ u=(Math.random()*2-1)*0.60; }while(Math.abs(u-prev)<0.55); return u; }
+
+  function newLeg(now){
+    if(dir>0){ hitter=NEAR; receiver=FAR; } else { hitter=FAR; receiver=NEAR; }
+    receiver.uStart=receiver.u; hitter.uStart=hitter.u;
+    receiver.uTarget=pickTarget(receiver.lastT); receiver.lastT=receiver.uTarget;
+    hitter.uTarget=0;                                    // recover toward center
+    gHit =proj(hitter.uStart,  hitter.contactVsign);
+    gRecv=proj(receiver.uTarget,receiver.contactVsign);
+    hitterH=hitter.H; receiverH=receiver.H;
+    hRise=fitParabola([0,hitterH],[APEX_P,APEX],[BOUNCE,0]);
+    hHop =fitParabola([BOUNCE,0],[(BOUNCE+1)/2,50],[1,receiverH]);
+    hitter.contactAbs  ={x:gHit.x, y:gHit.y-hitterH};
+    receiver.contactAbs={x:gRecv.x,y:gRecv.y-receiverH};
+    legStart=now; legDur=reduce?1600:(900+Math.random()*180);
+  }
+
+  // move a player and place its (scaled) body on the court; returns absolute feet + scale
+  function poseAndFeet(P, isReceiver, p){
+    if(isReceiver) P.u=lerp(P.uStart,P.uTarget,smooth(0.05,0.84,p));
+    else           P.u=lerp(P.uStart,0,        smooth(0.0,0.72,p));
+    const stepv = isReceiver ? (0-P.baseV)*0.07*Math.sin(Math.PI*p) : 0; // reach in toward the ball
+    P.v=P.baseV+stepv;
+    const feet=proj(P.u,P.v), s=sFromV(P.v);
+    P.node.g.setAttribute('transform',`translate(${feet.x.toFixed(1)},${feet.y.toFixed(1)}) scale(${s.toFixed(3)})`);
+    return {feet,s};
+  }
+
+  const trail=[]; const TRAIL_N=reduce?0:8;
+  let last=performance.now();
+  newLeg(last);
+
+  function frame(now){
+    const dt=Math.min(50, now-last); last=now;
+    let p=(now-legStart)/legDur;
+    if(p>=1){ dir=-dir; newLeg(now); p=0; }
+
+    const bx=lerp(gHit.x,gRecv.x,p);
+    const gy=lerp(gHit.y,gRecv.y,p);
+    const h=heightAt(p);
+    const by=gy-h;
+
+    ball.setAttribute('cx',bx.toFixed(1));
+    ball.setAttribute('cy',by.toFixed(1));
+
+    // shadow on court
+    shadow.setAttribute('cx',bx.toFixed(1));
+    shadow.setAttribute('cy',gy.toFixed(1));
+    const sf=Math.max(0,1-h/300);
+    shadow.setAttribute('rx',(13*sf+4).toFixed(1));
+    shadow.setAttribute('ry',(5*sf+1.6).toFixed(1));
+    shadow.setAttribute('opacity',(0.30*sf+0.05).toFixed(2));
+
+    // trail
+    if(TRAIL_N){
+      trail.push({x:bx,y:by});
+      while(trail.length>TRAIL_N) trail.shift();
+      while(trailG.firstChild) trailG.removeChild(trailG.firstChild);
+      trail.forEach((pt,i)=>{
+        const a=(i+1)/trail.length;
+        trailG.appendChild(el('circle',{cx:pt.x.toFixed(1),cy:pt.y.toFixed(1),
+          r:(9*a*0.85).toFixed(1),fill:'#D9F25B',opacity:(a*0.30).toFixed(2)}));
+      });
+    }
+
+    // ---- footwork: move players on court (with depth-perspective scale) ----
+    const hf=poseAndFeet(hitter,false,p);
+    const rf=poseAndFeet(receiver,true,p);
+
+    // ball squash near contact + impact flash
+    const nearHit = Math.min(p, 1-p);
+    const squash = nearHit<0.05 ? (1 - (0.05-nearHit)*3) : 1;
+    ball.setAttribute('r',(10*Math.max(0.7,squash)).toFixed(1));
+    while(impactG.firstChild) impactG.removeChild(impactG.firstChild);
+    if(!reduce && nearHit<0.045){
+      const cpt = p<0.5 ? hitter.contactAbs : receiver.contactAbs;
+      const k=(0.045-nearHit)/0.045;
+      impactG.appendChild(el('circle',{cx:cpt.x,cy:cpt.y,r:(6+18*k).toFixed(1),
+        fill:'none',stroke:'#fff','stroke-width':2.2,opacity:(0.6*k).toFixed(2)}));
+    }
+
+    // ---- realistic swings: hitter (contact->follow-through->ready), receiver (ready->backswing->contact) ----
+    const hReady={x:hf.feet.x+hf.s*hitter.readyOffset.x, y:hf.feet.y+hf.s*hitter.readyOffset.y};
+    const rReady={x:rf.feet.x+rf.s*receiver.readyOffset.x, y:rf.feet.y+rf.s*receiver.readyOffset.y};
+    const hc=hitter.contactAbs, rc=receiver.contactAbs;
+    const hdx=hc.x-hf.feet.x, hdy=hc.y-hf.feet.y, hl=Math.hypot(hdx,hdy)||1;
+    const hfollow={x:hc.x+hdx/hl*16, y:hc.y-26};
+    const hRH = p<0.22
+      ? {x:lerp(hc.x,hfollow.x,smooth(0,0.22,p)), y:lerp(hc.y,hfollow.y,smooth(0,0.22,p))}
+      : {x:lerp(hfollow.x,hReady.x,smooth(0.22,0.86,p)), y:lerp(hfollow.y,hReady.y,smooth(0.22,0.86,p))};
+    const bdx=rf.feet.x-rc.x, bdy=rf.feet.y-rc.y, bl=Math.hypot(bdx,bdy)||1;
+    const rback={x:rc.x+bdx/bl*30, y:rc.y-16};
+    const rRH = p<0.5
+      ? {x:lerp(rReady.x,rback.x,smooth(0,0.5,p)), y:lerp(rReady.y,rback.y,smooth(0,0.5,p))}
+      : {x:lerp(rback.x,rc.x,smooth(0.5,1,p)), y:lerp(rback.y,rc.y,smooth(0.5,1,p))};
+    setRacket(hitter, hRH, hf.feet, hf.s);
+    setRacket(receiver, rRH, rf.feet, rf.s);
+
+    // idle bob + ponytail sway
+    const t=now/1000;
+    pNear.bob.setAttribute('transform',`translate(0,${(reduce?0:Math.sin(t*5.0)*1.2).toFixed(2)})`);
+    pFar.bob.setAttribute('transform',`translate(0,${(reduce?0:Math.sin(t*5.0+1.1)*1.0).toFixed(2)})`);
+    const pony=document.getElementById('pn_pony');
+    if(pony){const pa=reduce?0:Math.sin(t*5)*5;pony.setAttribute('transform',`rotate(${pa.toFixed(1)} 0 -110)`);}
+
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
